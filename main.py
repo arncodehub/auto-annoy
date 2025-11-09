@@ -267,6 +267,11 @@ async def admin_command(interaction: discord.Interaction, action: app_commands.C
     guild_state = get_guild_state(state, guild_id)
     
     if action.value == "add":
+        # Prevent bots from being added to admin list
+        if user.bot:
+            await interaction.response.send_message("Cannot add bots to the admin list.", ephemeral=True)
+            return
+        
         # Requirement 2.2: Check if user is already admin (prevent duplicates)
         if target_user_id in guild_state["adminIDs"] or target_user_id == owner_id:
             await interaction.response.send_message(f"User {user.mention} is already an admin.", ephemeral=True)
@@ -355,6 +360,11 @@ async def target_command(interaction: discord.Interaction, action: app_commands.
     guild_state = get_guild_state(state, guild_id, owner_id)
     
     if action.value == "add":
+        # Prevent bots from being added to target list
+        if user.bot:
+            await interaction.response.send_message("Cannot add bots to the target list.", ephemeral=True)
+            return
+        
         # Requirement 5.2: Check if user is already a target (prevent duplicates)
         if target_user_id in guild_state["targetIDs"]:
             await interaction.response.send_message(f"User {user.mention} is already in the target list.", ephemeral=True)
